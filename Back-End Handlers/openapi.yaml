@@ -1,0 +1,521 @@
+openapi: 3.0.3
+info:
+  title: Ebay Killer App 1.0
+  description: |
+    This is a project made for the Web Applications course, with the intention of creating an Ebay killer app.
+    
+    Authors are Luís Ferreirinha (51127) and Nélio Pereira (60550), of Group 30.
+  termsOfService: http://ebaykiller.com/terms/
+  contact:
+      name:
+        Ebay Killer App Support
+      email: 
+        ebaykiller@mail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: https://ebaykiller.com/api/v3
+tags:
+  - name: User Management
+    description: Manage user account and details
+  - name: Authentication Service
+    description: Authenticate users and reset password
+  - name: Payment Service
+    description: Process payments
+  - name: Notification Service
+    description: Send notifications to a user
+  - name: Auction Service
+    description: Manage auctions
+  - name: Item Management
+    description: Manage items avaible for auction
+  - name: Search Service
+    description: Peform searches according to user queries and return results
+  - name: Analytics Service
+    description: Calculate analytics based on user info
+  - name: Recommendation Service
+    description: Perform recommendations based on user info
+  - name: Shipping Service
+    description: Manage shipping orders for items sold in auctions
+
+
+paths:
+  /users:
+      description: Manage Users
+      get:
+        tags:
+          - User Management
+        description: Retrieve a list with all the users
+        responses:
+          200:
+            description: Success Response
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    properties:
+                      userid:
+                        type: integer
+                        example: 2
+                      username:
+                        type: string
+                        example: Daniel
+      put:
+        tags:
+          - User Management
+        description: Add a new user
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                      userid:
+                        type: integer
+                        example: 2
+                      username:
+                        type: string
+                        example: Daniel
+        responses:
+          201:
+            description: User successfully created!
+  /users/{userid}:
+    description: Get user based on path parameter
+    get:
+      tags:
+        - User Management
+      parameters:
+        - in: path
+          name: userid
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Success response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: integer
+                      example: 2
+                    username:
+                      type: string
+                      example: DanielV
+    put:
+      tags:
+        - User Management
+      description: Update user's details
+      parameters:
+        - in: path
+          name: userid
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                e-mail:
+                  type: string
+                  example: "anavicente1979@mail.com"
+                first_name:
+                  type: string
+                  example: "Ana"
+                last_name:
+                  type: string
+                  example: "Vicente"
+                birth_date:
+                  type: string
+                  example: "12-05-1979"
+                zipcode:
+                  type: string
+                  example: 2665
+                address:
+                  type: string
+                  example: "Rua das Flores, nº5"
+                username:
+                  type: string
+                  example: "avicente1979"
+                payment_info:
+                  type: string
+                  example: "4066 8673 2345 7610"
+      responses:
+        200:
+          description: User details updated successfully!
+        404:
+          description: Error! User not found!
+    delete:
+      tags:
+        - User Management
+      description: Delete a user
+      parameters:
+        - in: path
+          name: userid
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: User successfully deleted!
+  /auth/login:
+    put:
+      tags:
+        - Authentication Service
+      description: Authenticate the user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  example: 5
+                password:
+                  type: string
+                  example: "password_890"
+      responses:
+        200:
+          description: Successfully logged in!
+        400:
+          description: Authentication failed!
+  /auth/logout:
+    put:
+      tags:
+        - Authentication Service
+      description: Logout the user
+      responses:
+        200:
+          description: Logged out successfully!
+        400:
+          description: Logout failed.
+  /auth/resetpassword:
+    put:
+      tags:
+        - Authentication Service
+      description: Reset a user's password by sending a password reset link to the user's e-mail
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  example: "anavicente1979@mail.com"
+      responses:
+        200:
+          description: Password reset e-mail sent!
+        400:
+          description: Invalid e-mail address provided!
+  /payment/auction/{id}:
+    put:
+      tags:
+        - Payment Service
+      description: Submit payment for a specific auction.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            example: 140
+      requestBody:
+        description: Payment details.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                  format: float
+                  description: The amount to be paid.
+                  example: 130.5
+                payment_info:
+                  type: string
+                  description: The payment information to be used.
+                  example: "4066 8673 2345 7610"
+                date:
+                  type: string
+                  description: Date of transaction.
+                  example: "15-03-2023/16h14m39s"
+      responses:
+        200:
+          description: Payment submitted successfully.
+        400:
+          description: Invalid input.
+        404:
+          description: Auction not found.
+  /payment/{id}:
+    get:
+      tags:
+        - Payment Service
+      description: Retrieve the details of a payment by payment id.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            example: 123
+      responses:
+        200:
+          description: Success response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 123
+                  amount:
+                    type: number
+                    format: float
+                    example: 130.5
+                  payment_info:
+                    type: string
+                    example: "4066 8673 2345 7610"
+                  date:
+                    type: string
+                    example: "15-03-2023/16h14m39s"
+        404:
+          description: Payment not found.
+  /payments:
+    get:
+      tags: 
+        - Payment Service
+      description: Retrieve a list of all payments.
+      responses:
+        200:
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  properties:
+                    id:
+                      type: integer
+                      example: 345
+                    auction_id:
+                      type: integer
+                      example: 2756
+                    amount:
+                      type: number
+                      format: float
+                      example: 250.0
+                    payment_info:
+                      type: string
+                      example: "4066 8673 2345 7610"
+                    date:
+                      type: string
+                      example: "15-03-2023/16h14m39s"
+  /notifications/{userid}:
+    put:
+      description: Send a notification to a user.
+      tags:
+        - Notification Service
+      parameters:
+        - in: path
+          name: userid
+          required: true
+          description: The ID of the user to send the notification to.
+          schema:
+            type: integer
+            example: 123
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                message:
+                  type: string
+                  description: The message to be sent to the user.
+                  example: "Hello {userid}.Someone placed a bid on your auction"
+                subject:
+                  type: string
+                  description: The subject of the notification.
+                  example: "Someone placed a bid on your auction"
+      responses:
+        200:
+          description: Notification sent successfully!
+        404:
+          description: User not found!
+  /notifications/{notificationid}:
+    get:
+      description: Retrieve the details of a notification. 
+      tags: 
+        - Notification Service
+      parameters:
+      - in: path
+        name: notificationid
+        required: true
+        schema:
+          type: integer
+          example: 789
+      responses:
+        200:
+          description: Successfully retrieved details,
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notificationid:
+                    type: integer
+                    example: 789
+                  userid:
+                    type: integer
+                    example: 2
+  /users/{userid}/notifications:
+    get:
+      description: Retrieve a list of all notifications for a user.
+      tags:
+        - Notification Service
+      parameters:
+        - in: path
+          name: userid
+          required: true
+          schema:
+            type: integer
+            example: 123
+      responses:
+        200:
+          description: Notification list successfully returned!
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    notificationid:
+                      type: integer
+                      example: 800
+                    message:
+                      type: string
+                      example: New message received.
+                    date:
+                      type: string
+                      example: '15-03-2023/16h15m39s'
+        404:
+          description: Error! User not found!
+  /auctions/{auctionid}:
+    get:
+      tags:
+        - Auction Service
+      description: Get auction info by id.
+      parameters:
+      - in: path
+        name: auctionid
+        required: true
+        schema:
+          type: integer
+          example: 1200
+      responses:
+        200:
+          description: Successfully retrieved auction info!
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  auctionid:
+                    type: integer
+                    example: 1200
+                  name:
+                    type: string
+                    example: "Auction Tittle"
+                  description:
+                    type: string
+                    example: "This is the auction's description"
+                  start_time:
+                    type: string
+                    example: "15-03-2023/16h15m39s"
+                  end_time:
+                    type: string
+                    example: "15-04-2023/16h15m39s"
+                  current_bid:
+                    type: number
+                    format: float
+                    example: 150.0
+                  startingbid:
+                    type: number
+                    format: float
+                    example: 150
+                  status:
+                    type: string
+                    example: "active"
+        404:
+          description: Error! Auction not found!
+    put:
+      tags:
+        - Auction Service
+      parameters:
+        - in: path
+          name: auctionid
+          required: true
+          description: The ID of the auction to create.
+          schema:
+            type: integer
+            example: 2934
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                auctionid:
+                  type: integer
+                  example: 1200
+                name:
+                  type: string
+                  example: "Auction Tittle"
+                description:
+                  type: string
+                  example: "This is the auction's description"
+                start_time:
+                  type: string
+                  example: "15-03-2023/16h15m39s"
+                end_time:
+                  type: string
+                  example: "15-04-2023/16h15m39s"
+                currentbid:
+                  type: number
+                  format: float
+                  example: 250.5
+                startingbid:
+                  type: number
+                  format: float
+                  example: 150
+                item:
+                  type: "string"
+                  example: "bike"
+                status:
+                    type: string
+                    example: "active"
+      responses:
+        200:
+          description: Auction created successfully!
+        500:
+          description: Error! Auction not created!
