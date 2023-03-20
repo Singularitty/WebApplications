@@ -1,4 +1,5 @@
 openapi: 3.0.3
+
 info:
   title: Ebay Killer App 1.0
   description: |
@@ -176,7 +177,7 @@ paths:
         - name: userID
           in: body
           required: true
-          scheme:
+          schema:
             type: integer
             format: int64
       responses:
@@ -359,7 +360,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/definitions/Auction
+                $ref: '#/definitions/Auction'
         '404':
           description: Error! Auction not found!
         '400':
@@ -367,6 +368,7 @@ paths:
     put:
       tags:
         - Auction Service
+      description: Create a new auction with the specified id
       parameters:
         - in: path
           name: auctionid
@@ -386,7 +388,52 @@ paths:
           description: Auction created successfully!
         '400':
           description: Error! Auction not created!
-
+  /items/{id}:
+    get:
+      tags:
+        - Item Management
+      description: Gets an item by the item id
+      parameters:
+        - in: path
+          name: itemId
+          required: true
+          description: Id of the item
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Sucessfully retrieved item!
+          content:
+            application/json:
+              schema:
+                $ref: '#/definitions/Item'
+        '404':
+          description: Item not found!
+        '400':
+          description: Something went wrong.
+    put:
+      tags:
+        - Item Management
+      description: Create a new item with the specified Id
+      parameters:
+        - in: path
+          name: itemId
+          required: true
+          description: Id of the new imte
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/definitions/Item'
+    delete:
+      tags:
+        - Item Management
+    
 
 definitions:
   User:
@@ -462,6 +509,9 @@ definitions:
   Auction:
     type: object
     properties:
+      itemid:
+        type: integer
+        format: int64
       auctionid:
         type: integer
         example: 1200
@@ -488,3 +538,37 @@ definitions:
       status:
         type: string
         example: "active"
+  Item:
+    type: object
+    properties:
+      itemId:
+        type: integer
+        format: int64
+      itemName:
+        type: String
+      SellerId:
+        type: integer
+        format: int64
+      Area:
+        type: string
+      Category:
+        type: string
+      Description:
+        type: string
+  ShippingOrder:
+    type: object
+    properties:
+      shippingNumber:
+        type: integer
+        format: int64
+      itemId:
+        type: integer
+        format: int64
+      Address:
+        type: string
+      buyerId:
+        type: integer
+        format: int64
+      sellerId:
+        type: integer
+        format: int64
