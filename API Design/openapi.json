@@ -1,0 +1,2025 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Ebay Killer App 1.0",
+    "description": "This is a project made for the Web Applications course, with the intention of creating an Ebay killer app.\n\nAuthors are Luís Ferreirinha (51127) and Nélio Pereira (60550), of Group 30.\n",
+    "termsOfService": "http://ebaykiller.com/terms/",
+    "contact": {
+      "name": "Ebay Killer App Support",
+      "email": "ebaykiller@mail.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.11"
+  },
+  "servers": [
+    {
+      "url": "https://ebaykiller.com/api/v3"
+    }
+  ],
+  "tags": [
+    {
+      "name": "User Management",
+      "description": "Manage user account and details"
+    },
+    {
+      "name": "Authentication Service",
+      "description": "Authenticate users and reset password"
+    },
+    {
+      "name": "Payment Service",
+      "description": "Process payments"
+    },
+    {
+      "name": "Notification Service",
+      "description": "Send notifications to a user"
+    },
+    {
+      "name": "Auction Service",
+      "description": "Manage auctions"
+    },
+    {
+      "name": "Item Management",
+      "description": "Manage items available for auction"
+    },
+    {
+      "name": "Search Service",
+      "description": "Peform searches according to user queries and return results"
+    },
+    {
+      "name": "Analytics Service",
+      "description": "Calculate analytics based on user info"
+    },
+    {
+      "name": "Recommendation Service",
+      "description": "Perform recommendations based on user info"
+    },
+    {
+      "name": "Shipping Service",
+      "description": "Manage shipping orders for items sold in auctions"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "description": "Manage Users",
+      "get": {
+        "tags": [
+          "User Management"
+        ],
+        "description": "Retrieve a list with all the users",
+        "operationId": "getAllUsers",
+        "responses": {
+          "200": {
+            "description": "Success Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Something went found"
+          },
+          "404": {
+            "description": "No users found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "User Management"
+        ],
+        "description": "Create a new user",
+        "operationId": "createNewUser",
+        "parameters": [
+          {
+            "name": "userID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User successfully created!"
+          },
+          "400": {
+            "description": "Something went wrong, please try again."
+          }
+        }
+      }
+    },
+    "/users/{userid}": {
+      "description": "Get user based on path parameter",
+      "get": {
+        "tags": [
+          "User Management"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userid",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Couldn't find userID"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "User Management"
+        ],
+        "description": "Update user's details",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userid",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User details updated successfully!"
+          },
+          "400": {
+            "description": "Something went wrong"
+          },
+          "404": {
+            "description": "Error! User not found!"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User Management"
+        ],
+        "description": "Delete a user specified by the Id",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userid",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "User successfully deleted!"
+          },
+          "400": {
+            "description": "Something went wrong :("
+          },
+          "404": {
+            "description": "User not found!"
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": [
+          "Authentication Service"
+        ],
+        "description": "Authenticate the user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Credentials"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully logged in!"
+          },
+          "400": {
+            "description": "Authentication failed!"
+          },
+          "404": {
+            "description": "No user with that id!"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": [
+          "Authentication Service"
+        ],
+        "description": "Logout the user",
+        "parameters": [
+          {
+            "name": "userID",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logged out successfully!"
+          },
+          "400": {
+            "description": "Logout failed."
+          },
+          "404": {
+            "description": "Couldn't logout that user!"
+          }
+        }
+      }
+    },
+    "/auth/resetpassword": {
+      "post": {
+        "tags": [
+          "Authentication Service"
+        ],
+        "description": "Reset a user's password by sending a password reset link to the user's e-mail",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Credentials"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password reset e-mail sent!"
+          },
+          "400": {
+            "description": "Something bad happened!"
+          },
+          "404": {
+            "description": "Invalid e-mail address provided!"
+          }
+        }
+      }
+    },
+    "/users/{userId}/items/{itemId}": {
+      "post": {
+        "tags": [
+          "Payment Service"
+        ],
+        "description": "Submit payment for a specific item.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "itemId",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Payment details.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentDetails"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Payment submitted successfully."
+          },
+          "400": {
+            "description": "Invalid input."
+          },
+          "404": {
+            "description": "Item not found."
+          }
+        }
+      }
+    },
+    "/users/{userId}/items/{itemId}/payment": {
+      "get": {
+        "tags": [
+          "Payment Service"
+        ],
+        "description": "Retrieve the details of a payment by userId and itemId.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "itemId",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Something went wrong."
+          },
+          "404": {
+            "description": "Payment not found."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Payment Service"
+        ],
+        "description": "Update payment information for a specific item.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "itemId",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Payment details.",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PaymentDetails"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Payment updated successfully."
+          },
+          "400": {
+            "description": "Error! Payment was not updated."
+          },
+          "404": {
+            "description": "Error! Payment for Item not found."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Payment Service"
+        ],
+        "description": "Update payment information for a specific item.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "itemId",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payment removed successfully."
+          },
+          "400": {
+            "description": "Error! Payment was not deleted."
+          },
+          "404": {
+            "description": "Error! Payment for Item not found."
+          }
+        }
+      }
+    },
+    "/users/{userId}/notifcations/": {
+      "post": {
+        "description": "Create a notification for a specific user.",
+        "tags": [
+          "Notification Service"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "description": "The ID of the user to send the notification to.",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Notification"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Notification created successfully!"
+          },
+          "400": {
+            "description": "Something went wrong."
+          },
+          "404": {
+            "description": "User not found!"
+          }
+        }
+      },
+      "get": {
+        "description": "Retrieve a list of all notifications for a user.",
+        "tags": [
+          "Notification Service"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Notification list successfully returned!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Notification"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Something went wrong."
+          },
+          "404": {
+            "description": "Error! User not found!"
+          }
+        }
+      }
+    },
+    "/users/{userId}/notifications/{id}": {
+      "get": {
+        "description": "Retrieve the details of a notification.",
+        "tags": [
+          "Notification Service"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "description": "The ID of the user to send the notification to.",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Notification Id",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved notification details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Notification"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Couldn't remove notification."
+          },
+          "404": {
+            "description": "Notification not found."
+          }
+        }
+      },
+      "delete": {
+        "description": "Retrieve the details of a notification.",
+        "tags": [
+          "Notification Service"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "description": "The ID of the user to send the notification to.",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Notification Id",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Notification removed sucessfully!"
+          },
+          "400": {
+            "description": "Couldn't remove notification."
+          },
+          "404": {
+            "description": "Notification not found."
+          }
+        }
+      }
+    },
+    "/users/{userId}/notifications/send": {
+      "post": {
+        "description": "Send unread notifications to the user",
+        "tags": [
+          "Notification Service"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "description": "The ID of the user to send the notification to.",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Notifications successfully!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Notification"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Something went wrong."
+          },
+          "404": {
+            "description": "No unread notifications!"
+          }
+        }
+      }
+    },
+    "/auctions": {
+      "get": {
+        "tags": [
+          "Auction Service"
+        ],
+        "description": "Get list of all auctions",
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved all auctions!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Auction"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Couldn't retrieve list of auctions"
+          },
+          "404": {
+            "description": "No auctions found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Auction Service"
+        ],
+        "description": "Create a new auction",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Auction"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Sucessfully created a new auction"
+          },
+          "400": {
+            "description": "Error! Auction not created!"
+          }
+        }
+      }
+    },
+    "/auctions/{auctionid}": {
+      "get": {
+        "tags": [
+          "Auction Service"
+        ],
+        "description": "Get auction info by id.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "auctionid",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64",
+              "example": 1200
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved auction info!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Auction"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Something went wrong."
+          },
+          "404": {
+            "description": "Error! Auction not found!"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Auction Service"
+        ],
+        "description": "Update an auction with the specified id",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "auctionid",
+            "required": true,
+            "description": "The ID of the auction to create.",
+            "schema": {
+              "type": "integer",
+              "example": 2934
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Auction"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Auction updated successfully!"
+          },
+          "400": {
+            "description": "Error! Auction not created!"
+          }
+        }
+      }
+    },
+    "/auctions/{id}/bids": {
+      "get": {
+        "tags": [
+          "Auction Service"
+        ],
+        "description": "Get list of all bids placed on a action",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Auction id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bidding history sucessfully retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Bid"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Something went wrong"
+          },
+          "404": {
+            "description": "No bidding history found for this auction"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Auction Service"
+        ],
+        "description": "Place a bid on an auction",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Auction id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Bid"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Bid placed sucessfully!"
+          },
+          "400": {
+            "description": "Error! Couldn't place bid! Maybe you were outbid?"
+          },
+          "404": {
+            "description": "The auction you're trying to place a bid doesn't exist."
+          }
+        }
+      }
+    },
+    "/auctions/{id}/bids/{id}": {
+      "get": {
+        "tags": [
+          "Auction Service"
+        ],
+        "description": "Get information about a placed bid",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Id of the bid",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bid information sucessfully retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Bid"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Something went wrong."
+          },
+          "404": {
+            "description": "No bid with that id was found."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Auction Service"
+        ],
+        "description": "Delete a previously placed bid",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Id of the bid.",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bid sucessfully removed."
+          },
+          "400": {
+            "description": "Error! Couldn't remove bid."
+          },
+          "404": {
+            "description": "Error! Couldn't find a bid with that id."
+          }
+        }
+      }
+    },
+    "/items": {
+      "get": {
+        "tags": [
+          "Item Management"
+        ],
+        "description": "Get list of all available items",
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved all items!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Item"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Couldn't retrieve list of items"
+          },
+          "404": {
+            "description": "No items found"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Item Management"
+        ],
+        "description": "Create a new item",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Item"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Sucessfully created a new auction"
+          },
+          "400": {
+            "description": "Error! Auction not created!"
+          }
+        }
+      }
+    },
+    "/items/{id}": {
+      "get": {
+        "tags": [
+          "Item Management"
+        ],
+        "description": "Gets an item by the item id",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Id of the item",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sucessfully retrieved item!",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Item"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Something went wrong."
+          },
+          "404": {
+            "description": "Item not found!"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Item Management"
+        ],
+        "description": "Update an item with the specified Id",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Id of the new imte",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Item"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Sucessfully updated the item!"
+          },
+          "400": {
+            "description": "Something went wrong."
+          },
+          "404": {
+            "description": "Item not found!"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Item Management"
+        ],
+        "description": "Delete an item",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Id of the item.",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Item sucessfully deleted."
+          },
+          "400": {
+            "description": "Error! Couldn't remove item."
+          },
+          "404": {
+            "description": "Error! Couldn't find a item with that id."
+          }
+        }
+      }
+    },
+    "/items/{id}/images": {
+      "get": {
+        "tags": [
+          "Item Management"
+        ],
+        "description": "Gets all images attached to an item",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Id of the item",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sucessfully retrieved all images!",
+            "content": {
+              "image/*": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Something went wrong."
+          },
+          "404": {
+            "description": "Item not found!"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Item Management"
+        ],
+        "description": "Attach an image to an item",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Id of the item",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "image/*": {
+              "schema": {
+                "type": "string",
+                "format": "binary"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Sucessfully attached an image to the item!"
+          },
+          "400": {
+            "description": "Something went wrong."
+          },
+          "404": {
+            "description": "Item not found!"
+          }
+        }
+      }
+    },
+    "/items/{id}/images/{imageid}": {
+      "get": {
+        "tags": [
+          "Item Management"
+        ],
+        "description": "Get an items image by its id",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Id of the item",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "in": "path",
+            "name": "imageid",
+            "required": true,
+            "description": "Id of the image",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sucessfully retrieved image!",
+            "content": {
+              "image/*": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Something went wrong."
+          },
+          "404": {
+            "description": "Item or image not found!"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Item Management"
+        ],
+        "description": "Delete an items image by its id",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Id of the item",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "in": "path",
+            "name": "imageid",
+            "required": true,
+            "description": "Id of the image",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sucessfully deleted image!"
+          },
+          "400": {
+            "description": "Something went wrong."
+          },
+          "404": {
+            "description": "Item or image not found!"
+          }
+        }
+      }
+    },
+    "/search": {
+      "post": {
+        "tags": [
+          "Search Service"
+        ],
+        "description": "Search for an item",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/SearchQuery"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success! Retrieved a list of auctions that match the filters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Auction"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error! Couldn't perform search."
+          },
+          "404": {
+            "description": "Found no auctions that match the given filters."
+          }
+        }
+      }
+    },
+    "/users/{userId}": {
+      "post": {
+        "tags": [
+          "Analytics Service"
+        ],
+        "description": "Create analytics for a user",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "description": "User Id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserAnalytics"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success! Calculated new analytics"
+          },
+          "400": {
+            "description": "Error! Couldn't calculate any analytics for this user."
+          }
+        }
+      }
+    },
+    "/users/{userId}/analytics": {
+      "get": {
+        "tags": [
+          "Analytics Service"
+        ],
+        "description": "Retrieve user analytics",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "description": "User Id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success! Retrieved analytics for this user."
+          },
+          "400": {
+            "description": "Error! Couldn't retrieve analytics."
+          },
+          "404": {
+            "description": "Error! Couldn't find this user."
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Analytics Service"
+        ],
+        "description": "Update a users analytics",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "description": "User Id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserAnalytics"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success! Updated analytics for this user."
+          },
+          "400": {
+            "description": "Error! Couldn't update analytics."
+          },
+          "404": {
+            "description": "Error! Couldn't find this user."
+          }
+        }
+      }
+    },
+    "/users/{userId}/recomendations": {
+      "get": {
+        "tags": [
+          "Recommendation Service"
+        ],
+        "description": "Get a list of all recomendations for a certain user by its ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "description": "User Id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success! Retrieved a list of recommendations.",
+            "content": {
+              "applications/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Auction"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error! Something went wrong."
+          },
+          "404": {
+            "description": "Error! Couldn't find the user."
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Recommendation Service"
+        ],
+        "description": "Create a recomendation for this user",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "description": "User Id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Auction"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success! Created a new recommendation."
+          },
+          "400": {
+            "description": "Error! Couldn't create recommendation."
+          },
+          "404": {
+            "description": "Error! Couldn't find that user."
+          }
+        }
+      }
+    },
+    "/users/{userId}/recomendations/{id}": {
+      "get": {
+        "tags": [
+          "Recommendation Service"
+        ],
+        "description": "Get a list of all recomendations for a certain user by its ID",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "userId",
+            "required": true,
+            "description": "User Id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "Recomendation ID",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success! Retrieved a specific auction recomendation.",
+            "content": {
+              "applications/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Auction"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error! Something went wrong."
+          },
+          "404": {
+            "description": "Error! Couldn't find the user or the recomendation."
+          }
+        }
+      }
+    },
+    "/items/{itemId}": {
+      "post": {
+        "tags": [
+          "Shipping Service"
+        ],
+        "description": "Create a shipping order for this item",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "itemId",
+            "required": true,
+            "description": "Item Id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShippingOrder"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success! Created a new shipping order."
+          },
+          "400": {
+            "description": "Error! Couldn't create shipping order."
+          },
+          "404": {
+            "description": "Error! Couldn't find that item."
+          }
+        }
+      }
+    },
+    "/items/{itemId}/shipping": {
+      "put": {
+        "tags": [
+          "Shipping Service"
+        ],
+        "description": "Update shipping order for this item",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "itemId",
+            "required": true,
+            "description": "Item Id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShippingOrder"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success! Updated shipping order."
+          },
+          "400": {
+            "description": "Error! Couldn't update shipping order."
+          },
+          "404": {
+            "description": "Error! Couldn't find shipping order for that item."
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Shipping Service"
+        ],
+        "description": "Get shipping order information for this item",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "itemId",
+            "required": true,
+            "description": "Item Id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success! Retrieved shipping order.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ShippingOrder"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Error! Couldn't retrieve shipping order."
+          },
+          "404": {
+            "description": "Error! Couldn't retrieve shipping order for that item."
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Shipping Service"
+        ],
+        "description": "Delete shipping order for this item",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "itemId",
+            "required": true,
+            "description": "Item Id",
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success! Removed shipping order."
+          },
+          "400": {
+            "description": "Error! Couldn't remove shipping order."
+          },
+          "404": {
+            "description": "Error! Couldn't find shipping order for that item."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "e-mail": {
+            "type": "string",
+            "example": "anavicente1979@mail.com"
+          },
+          "first_name": {
+            "type": "string",
+            "example": "Ana"
+          },
+          "last_name": {
+            "type": "string",
+            "example": "Vicente"
+          },
+          "birth_date": {
+            "type": "string",
+            "example": "12-05-1979"
+          },
+          "zipcode": {
+            "type": "string",
+            "example": 2665
+          },
+          "address": {
+            "type": "string",
+            "example": "Rua das Flores, nº5"
+          },
+          "username": {
+            "type": "string",
+            "example": "avicente1979"
+          },
+          "payment_info": {
+            "type": "string",
+            "example": "4066 8673 2345 7610"
+          }
+        }
+      },
+      "Credentials": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "anavicente1979@mail.com"
+          },
+          "userID": {
+            "type": "integer",
+            "format": "int64",
+            "example": 23156456
+          },
+          "password": {
+            "type": "string",
+            "example": "123_Isto_NAO_EH_SEGURO!"
+          }
+        }
+      },
+      "PaymentDetails": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number",
+            "format": "float",
+            "description": "The amount to be paid.",
+            "example": 130.5
+          },
+          "payment_info": {
+            "type": "string",
+            "description": "The payment information to be used.",
+            "example": "4066 8673 2345 7610"
+          },
+          "date": {
+            "type": "string",
+            "description": "Date of transaction.",
+            "example": "15-03-2023/16h14m39s"
+          }
+        }
+      },
+      "Notification": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "The message to be sent to the user.",
+            "example": "Hello {userid}. Someone placed a bid on your auction"
+          },
+          "subject": {
+            "type": "string",
+            "description": "The subject of the notification.",
+            "example": "Someone placed a bid on your auction"
+          },
+          "date": {
+            "type": "string",
+            "example": "15-03-2023/16h15m39s"
+          },
+          "status": {
+            "type": "string",
+            "example": "unread"
+          }
+        }
+      },
+      "Auction": {
+        "type": "object",
+        "properties": {
+          "itemid": {
+            "type": "integer",
+            "format": "int64",
+            "example": 87448
+          },
+          "auctionid": {
+            "type": "integer",
+            "example": 1200
+          },
+          "name": {
+            "type": "string",
+            "example": "Auction Tittle"
+          },
+          "description": {
+            "type": "string",
+            "example": "This is the auction's description"
+          },
+          "start_time": {
+            "type": "string",
+            "example": "15-03-2023/16h15m39s"
+          },
+          "end_time": {
+            "type": "string",
+            "example": "15-04-2023/16h15m39s"
+          },
+          "current_bid": {
+            "type": "number",
+            "format": "float",
+            "example": 155
+          },
+          "startingbid": {
+            "type": "number",
+            "format": "float",
+            "example": 150
+          },
+          "highestBidderId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 45654
+          },
+          "status": {
+            "type": "string",
+            "example": "active"
+          }
+        }
+      },
+      "Item": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 5465456
+          },
+          "itemName": {
+            "type": "string",
+            "example": "Vintage Bike"
+          },
+          "SellerId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 4684564
+          },
+          "Area": {
+            "type": "string",
+            "example": "Lisbon"
+          },
+          "Category": {
+            "type": "string",
+            "example": "Motorcycle"
+          },
+          "Description": {
+            "type": "string",
+            "example": "Vintage bike 1980, Very good Condition, Never used, almost new, only crashed once or twice..."
+          }
+        }
+      },
+      "ShippingOrder": {
+        "type": "object",
+        "properties": {
+          "shippingNumber": {
+            "type": "integer",
+            "format": "int64",
+            "example": 4564
+          },
+          "itemId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 748
+          },
+          "Address": {
+            "type": "string",
+            "example": "Rua das Flores, nº5"
+          },
+          "Postcode": {
+            "type": "string",
+            "example": "2313 233"
+          },
+          "buyerId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sellerId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "paymentId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "Bid": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "userid": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "auctionId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "itemId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "bidValue": {
+            "type": "number",
+            "example": 130.23
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "15-04-2023/16h15m39s"
+          }
+        }
+      },
+      "SearchQuery": {
+        "type": "object",
+        "properties": {
+          "itemName": {
+            "type": "string",
+            "example": "Workstation Desktop"
+          },
+          "category": {
+            "type": "string",
+            "example": "Computers"
+          },
+          "area": {
+            "type": "string",
+            "example": "Porto"
+          },
+          "auctionStartTime": {
+            "type": "string",
+            "example": "1 day ago"
+          },
+          "auctionEndTime": {
+            "type": "string",
+            "example": "less than 1 hour"
+          },
+          "sellerName": {
+            "type": "string",
+            "example": "John Computer Man"
+          },
+          "currentBid": {
+            "type": "number",
+            "example": "Less than 100 €"
+          }
+        }
+      },
+      "UserAnalytics": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "auctionsParticipated": {
+            "type": "number"
+          },
+          "auctionsWon": {
+            "type": "number"
+          },
+          "auctionsStarted": {
+            "type": "number"
+          },
+          "totalBids": {
+            "type": "number"
+          },
+          "timesOutbid": {
+            "type": "number"
+          }
+        }
+      }
+    }
+  }
+}
