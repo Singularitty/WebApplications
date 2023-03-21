@@ -35,7 +35,7 @@ tags:
   - name: Auction Service
     description: Manage auctions
   - name: Item Management
-    description: Manage items avaible for auction
+    description: Manage items available for auction
   - name: Search Service
     description: Peform searches according to user queries and return results
   - name: Analytics Service
@@ -702,7 +702,7 @@ paths:
     delete:
       tags:
         - Item Management
-      description: Dlete an items image by its id
+      description: Delete an items image by its id
       parameters:
         - in: path
           name: id
@@ -725,6 +725,177 @@ paths:
           description: Item or image not found!
         '400':
           description: Something went wrong.
+  /search:
+    post:
+      tags:
+        - Search Service
+      description: Search for an item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items: 
+                $ref: '#/components/schemas/SearchQuery'
+      responses:
+        '201':
+          description: Success! Retrieved a list of auctions that match the filters.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Auction'
+        '404':
+          description: Found no auctions that match the given filters.
+        '400':
+          description: Error! Couldn't perform search.
+  /analytics:
+    post:
+      tags:
+        - Analytics Service
+      description: Create analytics for a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAnalytics'
+      responses:
+        '201':
+          description: Success! Calculated new analytics
+        '400':
+          description: Error! Couldn't calculate any analytics for this user.
+  /analytics/{userId}:
+    get:
+      tags:
+        - Analytics Service
+      description: Retrieve user analytics
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          description: User Id
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success! Retrieved analytics for this user.
+        '404':
+          description: Error! Couldn't find this user.
+        '400':
+          description: Error! Couldn't retrieve analytics.
+    put:
+      tags:
+        - Analytics Service
+      description: Update a users analytics
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          description: User Id
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserAnalytics'
+      responses:
+        '201':
+          description: Success! Updated analytics for this user.
+        '404':
+          description: Error! Couldn't find this user.
+        '400':
+          description: Error! Couldn't update analytics.
+      
+  /users/{userId}/recomendations:
+    get:
+      tags:
+        - Recommendation Service
+      description: Get a list of all recomendations for a certain user by its ID
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          description: User Id
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success! Retrieved a list of recommendations.
+          content:
+            applications/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Auction'
+        '404':
+          description: Error! Couldn't find the user.
+        '400':
+          description: Error! Something went wrong.
+    post:
+      tags:
+        - Recommendation Service
+      description: Create a recomendation for this user
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          description: User Id
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Auction'
+      responses:
+        '201':
+          description: Success! Created a new recommendation.
+        '404':
+          description: Error! Couldn't find that user.
+        '400':
+          description: Error! Couldn't create recommendation.
+  /users/{userId}/recomendations/{id}:
+    get:
+      tags:
+        - Recommendation Service
+      description: Get a list of all recomendations for a certain user by its ID
+      parameters:
+        - in: path
+          name: userId
+          required: true
+          description: User Id
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: id
+          required: true
+          description: Recomendation ID
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Success! Retrieved a specific auction recomendation.
+          content:
+            applications/json:
+              schema:
+                $ref: '#/components/schemas/Auction'
+        '404':
+          description: Error! Couldn't find the user or the recomendation.
+        '400':
+          description: Error! Something went wrong.
+  
     
 components:
   schemas:
@@ -886,3 +1057,36 @@ components:
           type: number
         timestamp:
           type: string
+    SearchQuery:
+      type: object
+      properties:
+        itemName:
+          type: string
+        category:
+          type: string
+        area:
+          type: string
+        auctionStartTime:
+          type: string
+        auctionEndTime:
+          type: string
+        sellerName:
+          type: string
+        currentBid:
+          type: number
+    UserAnalytics:
+      type: object
+      properties:
+        userId:
+          type: integer
+          format: int64
+        auctionsParticipated:
+          type: number
+        auctionsWon:
+          type: number
+        auctionsStarted:
+          type: number
+        totalBids:
+          type: number
+        timesOutbid:
+          type: number
