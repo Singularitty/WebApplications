@@ -62,7 +62,7 @@ paths:
                 schema:
                   type: array
                   items:
-                    $ref: '#/definitions/User'
+                    $ref: '#/components/schemas/User'
           '400':
               description: Something went found
           '404':
@@ -74,7 +74,7 @@ paths:
         operationId: createNewUser
         parameters:
           - name: userID
-            in: body
+            in: header
             required: true
             schema:
               type: integer
@@ -84,7 +84,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/definitions/User'
+                $ref: '#/components/schemas/User'
         responses:
           '201':
             description: User successfully created!
@@ -107,7 +107,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/definitions/User'
+                $ref: '#/components/schemas/User'
         '404':
           description: Couldn't find userID
     put:
@@ -125,7 +125,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/definitions/User'
+              $ref: '#/components/schemas/User'
       responses:
         '200':
           description: User details updated successfully!
@@ -160,7 +160,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/definitions/Credentials'
+              $ref: '#/components/schemas/Credentials'
       responses:
         '200':
           description: Successfully logged in!
@@ -175,7 +175,7 @@ paths:
       description: Logout the user
       parameters:
         - name: userID
-          in: body
+          in: header
           required: true
           schema:
             type: integer
@@ -197,7 +197,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/definitions/Credentials'
+              $ref: '#/components/schemas/Credentials'
       responses:
         '200':
           description: Password reset e-mail sent!
@@ -223,7 +223,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/definitions/PaymentDetails' 
+              $ref: '#/components/schemas/PaymentDetails' 
       responses:
         '200':
           description: Payment submitted successfully.
@@ -250,7 +250,7 @@ paths:
           content:
             application/json:
               schema:
-                $red: '#/definitions/PaymentDetails'
+                $ref: '#/components/schemas/PaymentDetails'
         '404':
           description: Payment not found.
         '400':
@@ -268,7 +268,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/definitions/PaymentDetails'
+                  $ref: '#/components/schemas/PaymentDetails'
   /notifications/{userid}:
     put:
       description: Send a notification to a user.
@@ -288,7 +288,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/definitions/Notification'
+              $ref: '#/components/schemas/Notification'
       responses:
         '200':
           description: Notification sent successfully!
@@ -314,7 +314,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/definitions/Notification'
+                $ref: '#/components/schemas/Notification'
   /users/{userid}/notifications:
     get:
       description: Retrieve a list of all notifications for a user.
@@ -336,11 +336,44 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/definitions/Notification'
+                  $ref: '#/components/schemas/Notification'
         '404':
           description: Error! User not found!
         '400':
           description: Something went wrong.
+  /auctions:
+    get:
+      tags:
+        - Auction Service
+      description: Get list of all auctions
+      responses:
+        '200':
+          description: Successfully retrieved all auctions!
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref : '#/components/schemas/Auction'
+        '400':
+          description: Couldn't retrieve list of auctions
+        '404':
+          description: No auctions found
+    post:
+      tags:
+        - Auction Service
+      description: Create a new auction
+      requestBody:
+        required: True
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Auction'
+      responses:
+        '201':
+          description: Sucessfully created a new auction
+        '400':
+          description: Error! Auction not created!
   /auctions/{auctionid}:
     get:
       tags:
@@ -348,7 +381,7 @@ paths:
       description: Get auction info by id.
       parameters:
       - in: path
-        name: auctionId
+        name: auctionid
         required: true
         schema:
           type: integer
@@ -360,7 +393,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/definitions/Auction'
+                $ref: '#/components/schemas/Auction'
         '404':
           description: Error! Auction not found!
         '400':
@@ -368,7 +401,7 @@ paths:
     put:
       tags:
         - Auction Service
-      description: Create a new auction with the specified id
+      description: Update an auction with the specified id
       parameters:
         - in: path
           name: auctionid
@@ -382,10 +415,135 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/definitions/Auction'
+              $ref: '#/components/schemas/Auction'
       responses:
         '201':
-          description: Auction created successfully!
+          description: Auction updated successfully!
+        '400':
+          description: Error! Auction not created!
+  /auctions/{id}/bids:
+    get:
+      tags:
+        - Auction Service
+      description: Get list of all bids placed on a action
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Auction id
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Bidding history sucessfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bid'
+        '404':
+          description: No bidding history found for this auction
+        '400':
+          description: Something went wrong
+    post:
+      tags:
+        - Auction Service
+      description: Place a bid on an auction
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Auction id
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Bid'
+      responses:
+        '201':
+          description: Bid placed sucessfully!
+        '400':
+          description: Error! Couldn't place bid! Maybe you were outbid?
+        '404':
+          description: The auction you're trying to place a bid doesn't exist.
+  /auctions/{id}/bids/{id}:
+    get:
+      tags:
+        - Auction Service
+      description: Get information about a placed bid
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Id of the bid
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Bid information sucessfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bid'
+        '400':
+          description: Something went wrong.
+        '404':
+          description: No bid with that id was found.
+    delete:
+      tags:
+        - Auction Service
+      description: Delete a previously placed bid
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Id of the bid.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Bid sucessfully removed.
+        '400':
+          description: Error! Couldn't remove bid.
+        '404':
+          description: Error! Couldn't find a bid with that id.
+  /items:
+    get:
+      tags:
+        - Item Management
+      description: Get list of all available items
+      responses:
+        '200':
+          description: Successfully retrieved all items!
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref : '#/components/schemas/Item'
+        '400':
+          description: Couldn't retrieve list of items
+        '404':
+          description: No items found
+    post:
+      tags:
+        - Item Management
+      description: Create a new item
+      requestBody:
+        required: True
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Item'
+      responses:
+        '201':
+          description: Sucessfully created a new auction
         '400':
           description: Error! Auction not created!
   /items/{id}:
@@ -395,7 +553,7 @@ paths:
       description: Gets an item by the item id
       parameters:
         - in: path
-          name: itemId
+          name: id
           required: true
           description: Id of the item
           schema:
@@ -407,7 +565,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/definitions/Item'
+                $ref: '#/components/schemas/Item'
         '404':
           description: Item not found!
         '400':
@@ -415,10 +573,10 @@ paths:
     put:
       tags:
         - Item Management
-      description: Create a new item with the specified Id
+      description: Update an item with the specified Id
       parameters:
         - in: path
-          name: itemId
+          name: id
           required: true
           description: Id of the new imte
           schema:
@@ -429,146 +587,302 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/definitions/Item'
+              $ref: '#/components/schemas/Item'
+      responses:
+        '201':
+          description: Sucessfully updated the item!
+        '404':
+          description: Item not found!
+        '400':
+          description: Something went wrong.
     delete:
       tags:
         - Item Management
+      description: Delete an item
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Id of the item.
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Item sucessfully deleted.
+        '400':
+          description: Error! Couldn't remove item.
+        '404':
+          description: Error! Couldn't find a item with that id.
+  /items/{id}/images:
+    get:
+      tags:
+        - Item Management
+      description: Gets all images attached to an item
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Id of the item
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Sucessfully retrieved all images!
+          content:
+            image/*:     # Media type
+             schema: 
+               type: array
+               items:
+                type: string
+                format: binary
+        '404':
+          description: Item not found!
+        '400':
+          description: Something went wrong.
+    post:
+      tags:
+        - Item Management
+      description: Attach an image to an item
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Id of the item
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+            image/*:     # Media type
+             schema: 
+              type: string
+              format: binary
+      responses:
+        '201':
+          description: Sucessfully attached an image to the item!
+        '404':
+          description: Item not found!
+        '400':
+          description: Something went wrong.
+  /items/{id}/images/{imageid}:
+    get:
+      tags:
+        - Item Management
+      description: Get an items image by its id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Id of the item
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: imageid
+          required: true
+          description: Id of the image
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Sucessfully retrieved image!
+          content:
+            image/*:     # Media type
+             schema: 
+              type: string
+              format: binary
+        '404':
+          description: Item or image not found!
+        '400':
+          description: Something went wrong.
+    delete:
+      tags:
+        - Item Management
+      description: Dlete an items image by its id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: Id of the item
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: imageid
+          required: true
+          description: Id of the image
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Sucessfully deleted image!
+        '404':
+          description: Item or image not found!
+        '400':
+          description: Something went wrong.
     
-
-definitions:
-  User:
-    type: object
-    properties:
-     e-mail:
-       type: string
-       example: "anavicente1979@mail.com"
-     first_name:
-       type: string
-       example: "Ana"
-     last_name:
-       type: string
-       example: "Vicente"
-     birth_date:
-       type: string
-       example: "12-05-1979"
-     zipcode:
-       type: string
-       example: 2665
-     address:
-       type: string
-       example: "Rua das Flores, nº5"
-     username:
-       type: string
-       example: "avicente1979"
-     payment_info:
-       type: string
-       example: "4066 8673 2345 7610"
-  Credentials:
-    type: object
-    properties:
-      email:
-        type: string
-      userID:
-        type: integer
-        format: int64
-      password:
-        type: string
-  PaymentDetails:
-    type: object
-    properties:
-      amount:
-        type: number
-        format: float
-        description: The amount to be paid.
-        example: 130.5
-      payment_info:
-        type: string
-        description: The payment information to be used.
-        example: "4066 8673 2345 7610"
-      date:
-        type: string
-        description: Date of transaction.
-        example: "15-03-2023/16h14m39s"
-  Notification:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int64
-      message:
-        type: string
-        description: The message to be sent to the user.
-        example: "Hello {userid}. Someone placed a bid on your auction"
-      subject:
-        type: string
-        description: The subject of the notification.
-        example: "Someone placed a bid on your auction"
-      date:
-        type: string
-        example: '15-03-2023/16h15m39s'
-  Auction:
-    type: object
-    properties:
-      itemid:
-        type: integer
-        format: int64
-      auctionid:
-        type: integer
-        example: 1200
-      name:
-        type: string
-        example: "Auction Tittle"
-      description:
-        type: string
-        example: "This is the auction's description"
-      start_time:
-        type: string
-        example: "15-03-2023/16h15m39s"
-      end_time:
-        type: string
-        example: "15-04-2023/16h15m39s"
-      current_bid:
-        type: number
-        format: float
-        example: 150.0
-      startingbid:
-        type: number
-        format: float
-        example: 150
-      status:
-        type: string
-        example: "active"
-  Item:
-    type: object
-    properties:
-      itemId:
-        type: integer
-        format: int64
-      itemName:
-        type: String
-      SellerId:
-        type: integer
-        format: int64
-      Area:
-        type: string
-      Category:
-        type: string
-      Description:
-        type: string
-  ShippingOrder:
-    type: object
-    properties:
-      shippingNumber:
-        type: integer
-        format: int64
-      itemId:
-        type: integer
-        format: int64
-      Address:
-        type: string
-      buyerId:
-        type: integer
-        format: int64
-      sellerId:
-        type: integer
-        format: int64
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+       e-mail:
+         type: string
+         example: "anavicente1979@mail.com"
+       first_name:
+         type: string
+         example: "Ana"
+       last_name:
+         type: string
+         example: "Vicente"
+       birth_date:
+         type: string
+         example: "12-05-1979"
+       zipcode:
+         type: string
+         example: 2665
+       address:
+         type: string
+         example: "Rua das Flores, nº5"
+       username:
+         type: string
+         example: "avicente1979"
+       payment_info:
+         type: string
+         example: "4066 8673 2345 7610"
+    Credentials:
+      type: object
+      properties:
+        email:
+          type: string
+        userID:
+          type: integer
+          format: int64
+        password:
+          type: string
+    PaymentDetails:
+      type: object
+      properties:
+        amount:
+          type: number
+          format: float
+          description: The amount to be paid.
+          example: 130.5
+        payment_info:
+          type: string
+          description: The payment information to be used.
+          example: "4066 8673 2345 7610"
+        date:
+          type: string
+          description: Date of transaction.
+          example: "15-03-2023/16h14m39s"
+    Notification:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        message:
+          type: string
+          description: The message to be sent to the user.
+          example: "Hello {userid}. Someone placed a bid on your auction"
+        subject:
+          type: string
+          description: The subject of the notification.
+          example: "Someone placed a bid on your auction"
+        date:
+          type: string
+          example: '15-03-2023/16h15m39s'
+    Auction:
+      type: object
+      properties:
+        itemid:
+          type: integer
+          format: int64
+        auctionid:
+          type: integer
+          example: 1200
+        name:
+          type: string
+          example: "Auction Tittle"
+        description:
+          type: string
+          example: "This is the auction's description"
+        start_time:
+          type: string
+          example: "15-03-2023/16h15m39s"
+        end_time:
+          type: string
+          example: "15-04-2023/16h15m39s"
+        current_bid:
+          type: number
+          format: float
+          example: 150.0
+        startingbid:
+          type: number
+          format: float
+          example: 150
+        status:
+          type: string
+          example: "active"
+    Item:
+      type: object
+      properties:
+        itemId:
+          type: integer
+          format: int64
+        itemName:
+          type: string
+        SellerId:
+          type: integer
+          format: int64
+        Area:
+          type: string
+        Category:
+          type: string
+        Description:
+          type: string
+    ShippingOrder:
+      type: object
+      properties:
+        shippingNumber:
+          type: integer
+          format: int64
+        itemId:
+          type: integer
+          format: int64
+        Address:
+          type: string
+        buyerId:
+          type: integer
+          format: int64
+        sellerId:
+          type: integer
+          format: int64
+        paymentId:
+          type: integer
+          format: int64
+    Bid:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        userid:
+          type: integer
+          format: int64
+        auctionId:
+          type: integer
+          format: int64
+        itemId:
+          type: integer
+          format: int64
+        bidValue:
+          type: number
+        timestamp:
+          type: string
