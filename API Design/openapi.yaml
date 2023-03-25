@@ -37,7 +37,7 @@ tags:
   - name: Item Management
     description: Manage items avaible for auction
   - name: Search Service
-    description: Peform searches according to user queries and return results
+    description: Perform searches according to user queries and return results
   - name: Analytics Service
     description: Calculate analytics based on user info
   - name: Recommendation Service
@@ -433,7 +433,22 @@ paths:
     delete:
       tags:
         - Item Management
-    
+      description: Delete an item
+      parameters:
+        - in: path
+          name: itemId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Item successfully deleted!
+        '404':
+          description: Item not found!
+        '400':
+          description: Something went wrong :(
+            
+            
 
 definitions:
   User:
