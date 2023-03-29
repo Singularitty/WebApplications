@@ -11,7 +11,7 @@ Repo for Web Applications Course (may god have mercy on my soul :sob::sob::sob::
     - Status: Delivered. To be updated according to the final Back-end Handlers for the final delivery :arrows_counterclockwise:
 
 3. Worflow Design
-    - Status: To be done. :heavy_exclamation_mark:
+    - Status: Delivered. To be updated according to the final Back-end Handlers for the final delivery :arrows_counterclockwise:
 
 4. Business Objects
     - Status: To be done. :heavy_exclamation_mark:
