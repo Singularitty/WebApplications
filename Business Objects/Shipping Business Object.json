@@ -1,0 +1,58 @@
+{
+  "title": "Shipping",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The unique identifier for the shipping."
+    },
+    "itemId": {
+      "type": "string",
+      "description": "The unique identifier of the item being shipped."
+    },
+    "auctionId": {
+      "type": "string",
+      "description": "The unique identifier of the auction related to the shipping."
+    },
+    "sellerId": {
+      "type": "string",
+      "description": "The unique identifier of the seller."
+    },
+    "method": {
+      "type": "string",
+      "description": "The shipping method (standard, expedited, pickup)."
+    },
+    "carrier": {
+      "type": "string",
+      "description": "The shipping carrier (e.g., UPS, FedEx, USPS)."
+    },
+    "trackingNumber": {
+      "type": "string",
+      "description": "The tracking number for the shipment."
+    },
+    "shippingCost": {
+      "type": "number",
+      "description": "The shipping cost."
+    },
+    "deliveryEstimate": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The estimated delivery date."
+    },
+    "status": {
+      "type": "string",
+      "description": "The status of the shipping (pending, shipped, delivered).",
+      "enum": ["pending", "shipped", "delivered"]
+    }
+  },
+  "required": [
+    "itemId",
+    "auctionId", 
+    "sellerId", 
+    "method", 
+    "carrier", 
+    "shippingCost", 
+    "deliveryEstimate", 
+    "status"
+  ]
+}

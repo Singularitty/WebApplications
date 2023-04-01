@@ -1,0 +1,49 @@
+{
+  "title": "Auction",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The unique identifier for the auction."
+    },
+    "itemId": {
+      "type": "string",
+      "description": "The unique identifier of the item being auctioned."
+    },
+    "sellerId": {
+      "type": "string",
+      "description": "The unique identifier of the seller."
+    },
+    "startTime": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The start time of the auction."
+    },
+    "endTime": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The end time of the auction."
+    },
+    "minBid": {
+      "type": "number",
+      "description": "The minimum bid for the auction."
+    },
+    "currentBid": {
+      "type": "number",
+      "description": "The current highest bid for the auction."
+    },
+    "status": {
+      "type": "string",
+      "description": "The status of the auction (upcoming, live, closed).",
+      "enum": ["upcoming", "live", "closed"]
+    }
+  },
+  "required": [
+    "itemId", 
+    "sellerId", 
+    "startTime", 
+    "endTime", 
+    "minBid", 
+    "status"
+  ]
+}

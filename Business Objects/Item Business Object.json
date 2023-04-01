@@ -1,0 +1,72 @@
+{
+  "title": "Item",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The unique identifier for the item."
+    },
+    "name": {
+      "type": "string",
+      "description": "The name of the item."
+    },
+    "description": {
+      "type": "string",
+      "description": "A detailed description of the item."
+    },
+    "category": {
+      "type": "string",
+      "description": "The category of the item."
+    },
+    "condition": {
+      "type": "string",
+      "description": "The condition of the item (new, used)."
+    },
+    "startingPrice": {
+      "type": "number",
+      "description": "The starting price for the item."
+    },
+    "sellerId": {
+      "type": "string",
+      "description": "The unique identifier of the seller."
+    },
+    "dateAdded": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date the item was added."
+    },
+    "images": {
+      "type": "array",
+      "description": "An array of images related to the item.",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The unique identifier for the image."
+          },
+          "itemId": {
+            "type": "string",
+            "description": "The unique identifier of the item the image is associated with."
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "The URL of the image."
+          }
+        },
+        "required": [
+          "id", 
+          "itemId", 
+          "url"]
+      }
+    }
+  },
+  "required": [
+    "name", 
+    "description", 
+    "category", 
+    "condition", 
+    "startingPrice", 
+    "sellerId"]
+}

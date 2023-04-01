@@ -1,0 +1,59 @@
+{
+  "title": "Payment",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The unique identifier for the payment."
+    },
+    "auctionId": {
+      "type": "string",
+      "description": "The unique identifier of the auction related to the payment."
+    },
+    "itemId": {
+      "type": "string",
+      "description": "The unique identifier of the item being paid for."
+    },
+    "payerId": {
+      "type": "string",
+      "description": "The unique identifier of the payer (buyer)."
+    },
+    "payeeId": {
+      "type": "string",
+      "description": "The unique identifier of the payee (seller)."
+    },
+    "paymentMethod": {
+      "type": "string",
+      "description": "The payment method used (e.g., credit card, PayPal, bank transfer)."
+    },
+    "paymentStatus": {
+      "type": "string",
+      "description": "The status of the payment (pending, completed, failed).",
+      "enum": ["pending", "completed", "failed"]
+    },
+    "amount": {
+      "type": "number",
+      "description": "The amount of the payment."
+    },
+    "currency": {
+      "type": "string",
+      "description": "The currency of the payment."
+    },
+    "transactionDate": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The date of the transaction."
+    }
+  },
+  "required": [
+    "auctionId",
+    "itemId",
+    "payerId",
+    "payeeId",
+    "paymentMethod",
+    "paymentStatus",
+    "amount",
+    "currency",
+    "transactionDate"
+  ]
+}

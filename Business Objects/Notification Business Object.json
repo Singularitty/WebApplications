@@ -1,0 +1,43 @@
+{
+  "title": "Notification",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "The unique identifier for the notification."
+    },
+    "userId": {
+      "type": "string",
+      "description": "The unique identifier of the user receiving the notification."
+    },
+    "type": {
+      "type": "string",
+      "description": "The type of notification (e.g., bid_placed, auction_won, auction_ending).",
+      "enum": ["bid_placed", "auction_won", "auction_ending"]
+    },
+    "message": {
+      "type": "string",
+      "description": "The message content of the notification."
+    },
+    "relatedObjectId": {
+      "type": "string",
+      "description": "The unique identifier of the related object (e.g., auction or item)."
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "The timestamp when the notification was created."
+    },
+    "read": {
+      "type": "boolean",
+      "description": "Indicates if the notification has been read by the user."
+    }
+  },
+  "required": [
+    "userId",
+    "type",
+    "message",
+    "relatedObjectId",
+    "timestamp",
+    "read"]
+}
