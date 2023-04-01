@@ -17,7 +17,7 @@ Repo for Web Applications Course (may god have mercy on my soul :sob::sob::sob::
     - Status: To be done. :heavy_exclamation_mark:
 
 5. Front-end Handlers
-    - Status: Soon :construction:
+    - Status: To be done. :heavy_exclamation_mark:
 
 6. Data Bidings
     - Status: Soon :construction:
