@@ -1,0 +1,40 @@
+Auction Page:
+https://www.layoutit.com/share/view/b495013ada2423a504850df8c70e2500
+
+User profile:
+https://www.layoutit.com/share/view/4e2f2e6f2de514c5692e1b38a682ab35
+
+Create new auction: (perdi o link mas temos o html)
+
+User settings:
+https://www.layoutit.com/share/view/8385a5d6161ea5f94f5aeb3891b718bd
+
+Active Auction Dashboard:
+https://www.layoutit.com/share/view/fb6f0decc3c9b8b70ad0cd7121984e16
+
+Search Page:
+https://www.layoutit.com/share/view/98e9cd131a7f3b55b39a60652fa78bbf
+
+Shipping Page:
+
+https://www.layoutit.com/share/view/a611c731585a0e1eee24ea823da605a0
+
+
+Analytics Page:
+
+https://www.layoutit.com/share/view/9dacfd863fb744ed1183372dbf5d2eda
+
+
+
+
+<input class="form-control mr-sm-2" type="text" placeholder="Search">
+
+
+<input class="form-control mr-sm-2" type="text" placeholder="Search">
+
+
+
+
+
+
+
