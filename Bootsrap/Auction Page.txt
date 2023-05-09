@@ -25,7 +25,9 @@ Analytics Page:
 https://www.layoutit.com/share/view/9dacfd863fb744ed1183372dbf5d2eda
 
 
+Login Page:
 
+https://www.layoutit.com/share/view/530bf32bcef5e353860c0fa9928c2bc6
 
 <input class="form-control mr-sm-2" type="text" placeholder="Search">
 
