@@ -24,6 +24,9 @@ Analytics Page:
 
 https://www.layoutit.com/share/view/9dacfd863fb744ed1183372dbf5d2eda
 
+Create Auction Page:
+
+https://www.layoutit.com/share/view/b5080f52400f0c577dc83ada0d3e7612
 
 Login Page:
 
