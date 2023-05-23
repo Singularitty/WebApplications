@@ -1,0 +1,375 @@
+{
+    "Grupo": 30,
+    "Authors": [
+        "Luís Ferreirinha N51127",
+        "Nélio Pereira N60550" 
+    ],
+
+    "Business Objects": [
+        {
+            "title": "Auction",
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "The unique identifier for the auction."
+              },
+              "itemId": {
+                "type": "string",
+                "description": "The unique identifier of the item being auctioned."
+              },
+              "sellerId": {
+                "type": "string",
+                "description": "The unique identifier of the seller."
+              },
+              "startTime": {
+                "type": "string",
+                "format": "date-time",
+                "description": "The start time of the auction."
+              },
+              "endTime": {
+                "type": "string",
+                "format": "date-time",
+                "description": "The end time of the auction."
+              },
+              "minBid": {
+                "type": "number",
+                "description": "The minimum bid for the auction."
+              },
+              "currentBid": {
+                "type": "number",
+                "description": "The current highest bid for the auction."
+              },
+              "status": {
+                "type": "string",
+                "description": "The status of the auction (upcoming, live, closed).",
+                "enum": ["upcoming", "live", "closed"]
+              }
+            },
+            "required": [
+              "itemId", 
+              "sellerId", 
+              "startTime", 
+              "endTime", 
+              "minBid", 
+              "status"
+            ]
+          },
+
+          {
+            "title": "Item",
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "The unique identifier for the item."
+              },
+              "name": {
+                "type": "string",
+                "description": "The name of the item."
+              },
+              "description": {
+                "type": "string",
+                "description": "A detailed description of the item."
+              },
+              "category": {
+                "type": "string",
+                "description": "The category of the item."
+              },
+              "condition": {
+                "type": "string",
+                "description": "The condition of the item (new, used)."
+              },
+              "startingPrice": {
+                "type": "number",
+                "description": "The starting price for the item."
+              },
+              "sellerId": {
+                "type": "string",
+                "description": "The unique identifier of the seller."
+              },
+              "dateAdded": {
+                "type": "string",
+                "format": "date-time",
+                "description": "The date the item was added."
+              },
+              "images": {
+                "type": "array",
+                "description": "An array of images related to the item.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "The unique identifier for the image."
+                    },
+                    "itemId": {
+                      "type": "string",
+                      "description": "The unique identifier of the item the image is associated with."
+                    },
+                    "url": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "The URL of the image."
+                    }
+                  },
+                  "required": [
+                    "id", 
+                    "itemId", 
+                    "url"]
+                }
+              }
+            },
+            "required": [
+              "name", 
+              "description", 
+              "category", 
+              "condition", 
+              "startingPrice", 
+              "sellerId"]
+          },
+
+          {
+            "title": "Notification",
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "The unique identifier for the notification."
+              },
+              "userId": {
+                "type": "string",
+                "description": "The unique identifier of the user receiving the notification."
+              },
+              "type": {
+                "type": "string",
+                "description": "The type of notification (e.g., bid_placed, auction_won, auction_ending).",
+                "enum": ["bid_placed", "auction_won", "auction_ending"]
+              },
+              "message": {
+                "type": "string",
+                "description": "The message content of the notification."
+              },
+              "relatedObjectId": {
+                "type": "string",
+                "description": "The unique identifier of the related object (e.g., auction or item)."
+              },
+              "timestamp": {
+                "type": "string",
+                "format": "date-time",
+                "description": "The timestamp when the notification was created."
+              },
+              "read": {
+                "type": "boolean",
+                "description": "Indicates if the notification has been read by the user."
+              }
+            },
+            "required": [
+              "userId",
+              "type",
+              "message",
+              "relatedObjectId",
+              "timestamp",
+              "read"]
+          },
+
+          {
+            "title": "Payment",
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "The unique identifier for the payment."
+              },
+              "auctionId": {
+                "type": "string",
+                "description": "The unique identifier of the auction related to the payment."
+              },
+              "itemId": {
+                "type": "string",
+                "description": "The unique identifier of the item being paid for."
+              },
+              "payerId": {
+                "type": "string",
+                "description": "The unique identifier of the payer (buyer)."
+              },
+              "payeeId": {
+                "type": "string",
+                "description": "The unique identifier of the payee (seller)."
+              },
+              "paymentMethod": {
+                "type": "string",
+                "description": "The payment method used (e.g., credit card, PayPal, bank transfer)."
+              },
+              "paymentStatus": {
+                "type": "string",
+                "description": "The status of the payment (pending, completed, failed).",
+                "enum": ["pending", "completed", "failed"]
+              },
+              "amount": {
+                "type": "number",
+                "description": "The amount of the payment."
+              },
+              "currency": {
+                "type": "string",
+                "description": "The currency of the payment."
+              },
+              "transactionDate": {
+                "type": "string",
+                "format": "date-time",
+                "description": "The date of the transaction."
+              }
+            },
+            "required": [
+              "auctionId",
+              "itemId",
+              "payerId",
+              "payeeId",
+              "paymentMethod",
+              "paymentStatus",
+              "amount",
+              "currency",
+              "transactionDate"
+            ]
+          },
+          
+          {
+            "title": "Shipping",
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "The unique identifier for the shipping."
+              },
+              "itemId": {
+                "type": "string",
+                "description": "The unique identifier of the item being shipped."
+              },
+              "auctionId": {
+                "type": "string",
+                "description": "The unique identifier of the auction related to the shipping."
+              },
+              "sellerId": {
+                "type": "string",
+                "description": "The unique identifier of the seller."
+              },
+              "method": {
+                "type": "string",
+                "description": "The shipping method (standard, expedited, pickup)."
+              },
+              "carrier": {
+                "type": "string",
+                "description": "The shipping carrier (e.g., UPS, FedEx, USPS)."
+              },
+              "trackingNumber": {
+                "type": "string",
+                "description": "The tracking number for the shipment."
+              },
+              "shippingCost": {
+                "type": "number",
+                "description": "The shipping cost."
+              },
+              "deliveryEstimate": {
+                "type": "string",
+                "format": "date-time",
+                "description": "The estimated delivery date."
+              },
+              "status": {
+                "type": "string",
+                "description": "The status of the shipping (pending, shipped, delivered).",
+                "enum": ["pending", "shipped", "delivered"]
+              }
+            },
+            "required": [
+              "itemId",
+              "auctionId", 
+              "sellerId", 
+              "method", 
+              "carrier", 
+              "shippingCost", 
+              "deliveryEstimate", 
+              "status"
+            ]
+          },
+
+          {
+            "title": "User",
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "The unique identifier for the user."
+              },
+              "username": {
+                "type": "string",
+                "description": "The username of the user."
+              },
+              "email": {
+                "type": "string",
+                "format": "email",
+                "description": "The email address of the user."
+              },
+              "firstName": {
+                "type": "string",
+                "description": "The first name of the user."
+              },
+              "lastName": {
+                "type": "string",
+                "description": "The last name of the user."
+              },
+              "dateOfBirth": {
+                "type": "string",
+                "format": "date",
+                "description": "The date of birth of the user."
+              },
+              "address": {
+                "type": "object",
+                "properties": {
+                  "street": {
+                    "type": "string",
+                    "description": "The street address of the user."
+                  },
+                  "city": {
+                    "type": "string",
+                    "description": "The city of the user."
+                  },
+                  "state": {
+                    "type": "string",
+                    "description": "The state of the user."
+                  },
+                  "postalCode": {
+                    "type": "string",
+                    "description": "The postal code of the user."
+                  },
+                  "country": {
+                    "type": "string",
+                    "description": "The country of the user."
+                  }
+                },
+                "required": ["street", "city", "state", "postalCode", "country"]
+              },
+              "phoneNumber": {
+                "type": "string",
+                "description": "The phone number of the user."
+              },
+              "dateCreated": {
+                "type": "string",
+                "format": "date-time",
+                "description": "The date the user account was created."
+              }
+            },
+            "required": [
+              "username",
+              "email",
+              "password",
+              "firstName",
+              "lastName",
+              "dateOfBirth",
+              "address",
+              "phoneNumber",
+              "userType",
+              "dateCreated"
+            ]
+          }          
+    ]
+}
